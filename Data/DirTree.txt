@@ -1,0 +1,87 @@
+CV Dataset
+    ├── CelebA
+    │   └── img_align_celeba
+    │       ├── R_celeba_000001.jpg
+    │       ├── R_celeba_000002.jpg
+    │       └── ...
+    ├── faceapp
+    │   ├── test
+    │   │   ├── F_FAP1_00333-1.png
+    │   │   ├── F_FAP1_00333-2.png
+    │   │   └── ...
+    │   ├── test_mask
+    │   │   ├── F_FAP1_00333-1.png
+    │   │   ├── F_FAP1_00333-2.png
+    │   │   └── ...
+    │   ├── train
+    │   │   ├── F_FAP0_00000-1.png
+    │   │   ├── F_FAP0_00000-2.png
+    │   │   └── ...
+    │   ├── train_mask
+    │   ├── validation
+    │   └── validation_mask
+    ├── ffhq
+    │   ├── test
+    │   │   ├── R_FFHQ_11000.png
+    │   │   ├── R_FFHQ_11001.png
+    │   │   └── ...
+    │   ├── train
+    │   │   ├── R_FFHQ_00000.png
+    │   │   ├── R_FFHQ_00001.png
+    │   │   └── ...
+    │   └── validation
+    │       ├── R_FFHQ_10000.png
+    │       ├── R_FFHQ_10001.png
+    │       └── ...
+    ├── pggan_v2
+    │   ├── test
+    │   │   ├── F_PGN2_11000.png
+    │   │   ├── F_PGN2_11001.png
+    │   │   └── ...
+    │   ├── train
+    │   │   ├── F_PGN2_00000.png
+    │   │   ├── F_PGN2_00001.png
+    │   │   └── ...
+    │   └── validation
+    │       ├── F_PGN2_10000.png
+    │       ├── F_PGN2_10001.png
+    │       └── ...
+    ├── stargan
+    │   ├── test
+    │   │   ├── F_STGN_1100-02.png
+    │   │   ├── F_STGN_1100-03.png
+    │   │   └── ...
+    │   ├── train
+    │   │   ├── F_STGN_0000-01.png
+    │   │   ├── F_STGN_0000-02.png
+    │   │   └── ...
+    │   └── validation
+    │       ├── F_STGN_1000-01.png
+    │       ├── F_STGN_1000-02.png
+    │       └── ...
+    ├── stylegan_celeba
+    │   ├── test
+    │   │   ├── F_SyCA_11000.png
+    │   │   ├── F_SyCA_11001.png
+    │   │   └── ...
+    │   ├── train
+    │   │   ├── F_SyCA_00000.png
+    │   │   ├── F_SyCA_00001.png
+    │   │   └── ...
+    │   └── validation
+    │       ├── F_SyCA_10000.png
+    │       ├── F_SyCA_10001.png
+    │       └── ...
+    └── stylegan_ffhq
+        ├── test
+        │   ├── F_SyFQ_11000.png
+        │   ├── F_SyFQ_11001.png
+        │   └── ...
+        ├── train
+        │   ├── F_SyFQ_00000.png
+        │   ├── F_SyFQ_00001.png
+        │   └── ...
+        └── validation
+            ├── F_SyFQ_10000.png
+            ├── F_SyFQ_10001.png
+            └── ...
