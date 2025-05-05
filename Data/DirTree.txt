@@ -166,29 +166,30 @@ CV Dataset
 
 After downsampling and moving
 CV Dataset
-    ├── Fake
-    │   ├── Test
+    ├── Test
+    │   ├── Fake
     │   │   ├── F_STGN_0000-01.png
     │   │   ├── F_STGN_0000-02.png
     │   │   └── ...
-    │   ├── Train
+    │   └── Real
+    │       ├── R_celeba_080001.png
+    │       ├── R_celeba_080002.png
+    │       └── ...
+    ├── Train
+    │   ├── Fake
     │   │   ├── F_FAP0_00000-1.png
     │   │   ├── F_FAP0_00000-2.png
     │   │   └── ...
-    │   └── Validation
-    │       ├── F_STGN_1365-21.png
-    │       ├── F_STGN_1365-22.png
+    │   └── Real
+    │       ├── R_celeba_000001.png
+    │       ├── R_celeba_000002.png
     │       └── ...
-    └── Real
-        ├── Test
-        │   ├── R_celeba_080001.png
-        │   ├── R_celeba_080002.png
+    └── Validation
+        ├── Fake
+        │   ├── F_STGN_1365-21.png
+        │   ├── F_STGN_1365-22.png
         │   └── ...
-        ├── Train
-        │   ├── R_celeba_000001.png
-        │   ├── R_celeba_000002.png
-        │   └── ...
-        └── Validation
+        └── Real
             ├── R_celeba_070001.png
             ├── R_celeba_070002.png
             └── ...
