@@ -53,4 +53,4 @@ def print_directory_tree(path, filepath, prefix="", is_last=True, max_files=2, i
 # Print directory tree
 data_path = 'CV Dataset'
 print("📂 NYU Depth v2 - Directory Tree:\n")
-print_directory_tree(data_path, 'DirTree.txt', is_root=True)
+print_directory_tree(data_path, 'Data\DirTree.txt', is_root=True)
