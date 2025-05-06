@@ -1,6 +1,9 @@
 import os
 from PIL import Image
+import cv2
 import shutil
+import matplotlib.pyplot as plt
+import random
 
 def rename(dirPath):
     for f in os.listdir(dirPath):
@@ -75,6 +78,42 @@ def resize(dirPath):
 
     return
 
+def load(dirPath):
+    imgs, labels = [], []
+    for d in os.listdir(dirPath):
+        if os.path.isdir(os.path.join(dirPath, d)):
+            ims, labs = load(os.path.join(dirPath, d))
+            imgs += ims
+            labels += labs
+        else:
+            im = cv2.imread(os.path.join(dirPath, d))
+            im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+            imgs.append(im)
+            if d[0] == 'F':
+                labels.append(1)
+            else:
+                labels.append(0)
+
+    return imgs, labels
+
+def show_samples(data_path, title="Sample"):
+    
+    imgs, labels = load(data_path)
+
+    ims = random.choices(imgs, k=5)
+
+    fig, axes = plt.subplots(1, 5, figsize=(12, 4))
+    for i in range(5):
+        axes[i].imshow(ims[i])
+
+    plt.suptitle(title, weight="bold")
+    plt.tight_layout()
+    plt.savefig(f"figs/{title}.png")
+    plt.show(block=False)
+    plt.pause(3)
+    plt.close()
+    
+
 if __name__ == '__main__':
     dirPath = 'CV Dataset'
     # c = count(dirPath)
@@ -85,5 +124,7 @@ if __name__ == '__main__':
         # c = count(dirPath)
         # f.write(f'After downsampling and moving we have {c["R"]} real images and {c["F"]} fake ones\n')
         #f.write(f'Images have shapes: {get_shapes(dirPath)}\n')
-        resize(dirPath)
-        f.write(f'After resizing the images have shapes: {get_shapes(dirPath)}\n')
+        # resize(dirPath)
+        # f.write(f'After resizing the images have shapes: {get_shapes(dirPath)}\n')
+        show_samples('CV Dataset\Validation\Real', title="Real Samples")
+        show_samples('CV Dataset\Validation\Fake', title="Fake Samples")
