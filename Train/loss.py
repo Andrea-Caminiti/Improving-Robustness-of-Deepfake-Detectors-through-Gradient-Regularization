@@ -8,7 +8,7 @@ class GradientRegularizedLoss(nn.Module):
         self.alpha = alpha
         self.criterion = criterion
     
-    def forward(self, model, logits, shallow_feat, labels,):
+    def forward(self, model, logits, shallow_feat, labels):
         
         loss = self.criterion(logits, labels)
 
