@@ -168,28 +168,66 @@ After downsampling and moving
 CV Dataset
     ├── Test
     │   ├── Fake
-    │   │   ├── F_STGN_0000-01.png
-    │   │   ├── F_STGN_0000-02.png
-    │   │   └── ...
+    │   │   ├── 1
+    │   │   │   ├── F_SyCA_15316.png
+    │   │   │   ├── F_SyCA_15318.png
+    │   │   │   └── ...
+    │   │   └── 2
+    │   │       ├── F_SyCA_15317.png
+    │   │       ├── F_SyCA_15319.png
+    │   │       └── ...
     │   └── Real
-    │       ├── R_celeba_080001.png
-    │       ├── R_celeba_080002.png
-    │       └── ...
+    │       ├── 1
+    │       │   ├── R_celeba_080001.png
+    │       │   ├── R_celeba_080003.png
+    │       │   └── ...
+    │       └── 2
+    │           ├── R_celeba_080002.png
+    │           ├── R_celeba_080004.png
+    │           └── ...
     ├── Train
     │   ├── Fake
-    │   │   ├── F_FAP0_00000-1.png
-    │   │   ├── F_FAP0_00000-2.png
-    │   │   └── ...
+    │   │   ├── 1
+    │   │   │   ├── F_FAP0_00000-1.png
+    │   │   │   ├── F_FAP0_00002-2.png
+    │   │   │   └── ...
+    │   │   ├── 2
+    │   │   │   ├── F_FAP0_00000-2.png
+    │   │   │   ├── F_FAP0_00002-3.png
+    │   │   │   └── ...
+    │   │   ├── 3
+    │   │   │   ├── F_FAP0_00000-3.png
+    │   │   │   ├── F_FAP0_00003-1.png
+    │   │   │   └── ...
+    │   │   ├── 4
+    │   │   ├── 5
+    │   │   ├── 6
+    │   │   └── 7
     │   └── Real
-    │       ├── R_celeba_000001.png
-    │       ├── R_celeba_000002.png
-    │       └── ...
+    │       ├── 1
+    │       │   ├── R_celeba_000001.png
+    │       │   ├── R_celeba_000008.png
+    │       │   └── ...
+    │       ├── 2
+    │       │   ├── R_celeba_000002.png
+    │       │   ├── R_celeba_000009.png
+    │       │   └── ...
+    │       ├── 3
+    │       │   ├── R_celeba_000003.png
+    │       │   ├── R_celeba_000010.png
+    │       │   └── ...
+    │       ├── 4
+    │       ├── 5
+    │       ├── 6
+    │       └── 7
     └── Validation
         ├── Fake
-        │   ├── F_STGN_1365-21.png
-        │   ├── F_STGN_1365-22.png
-        │   └── ...
+        │   └── 1
+        │       ├── F_SyCA_05316.png
+        │       ├── F_SyCA_05317.png
+        │       └── ...
         └── Real
-            ├── R_celeba_070001.png
-            ├── R_celeba_070002.png
-            └── ...
+            └── 1
+                ├── R_celeba_070001.png
+                ├── R_celeba_070002.png
+                └── ...
