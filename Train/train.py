@@ -16,7 +16,7 @@ def train(dLoader_train, dLoader_valid, epochs, patience, loss_fn = nn.BCEWithLo
     metrics = {'Train': {'accuracy': [], 'precision': [], 'recall': [], 'f-score': [], 'auc': []},
                'Valid': {'accuracy': [], 'precision': [], 'recall': [], 'f-score': [], 'auc': []}}
     for epoch in range(epochs):
-        model.train()
+        model = model.train()
         epoch_loss = []        
         preds, gt = [], []
         best_valid_loss = 0.0
@@ -85,6 +85,7 @@ def valid(model, dLoader_valid, epoch, device):
     loss_fn = nn.BCEWithLogitsLoss()
     epoch_loss = []        
     preds, gt = [], []
+    model = model.eval()
     with torch.no_grad():
         for batch in tqdm(dLoader_valid, desc=f'Epoch {epoch}: Validation...', total=len(dLoader_valid)):
 
@@ -92,7 +93,7 @@ def valid(model, dLoader_valid, epoch, device):
             imgs = imgs.to(device)
             labels = labels.to(device)
 
-            logits, shallow_feat = model(imgs)
+            logits, _ = model(imgs)
 
             loss = loss_fn(logits, labels)
 
