@@ -33,23 +33,37 @@ def downsample(dirPath, i, j):
         
         if os.path.isfile(os.path.join(dirPath, elem)) and i < 100_000 and elem[0] == 'R':
             if i < 70_000:
-                idx_i = (i%7) + 1
+                idx_i = (i%70) + 1
+                if not os.path.exists(f'CV Dataset\Train\Real\{idx_i}'):
+                    os.makedirs(f'CV Dataset\Train\Real\{idx_i}')
                 shutil.move(os.path.join(dirPath, elem), os.path.join(f'CV Dataset\Train\Real\{idx_i}', elem))
             elif i < 80_000: 
-                shutil.move(os.path.join(dirPath, elem), os.path.join(fr'CV Dataset\Validation\Real\1', elem))
+                idx_i = (i%10) + 1
+                if not os.path.exists(f'CV Dataset\Validation\Real\{idx_i}'):
+                    os.makedirs(f'CV Dataset\Validation\Real\{idx_i}')
+                shutil.move(os.path.join(dirPath, elem), os.path.join(fr'CV Dataset\Validation\Real\{idx_i}', elem))
             else: 
-                idx_i = (i%2) + 1
+                idx_i = (i%20) + 1
+                if not os.path.exists(f'CV Dataset\Test\Real\{idx_i}'):
+                    os.makedirs(f'CV Dataset\Test\Real\{idx_i}')
                 shutil.move(os.path.join(dirPath, elem), os.path.join(f'CV Dataset\Test\Real\{idx_i}', elem))
             i+=1
         
         if os.path.isfile(os.path.join(dirPath, elem)) and j < 100_000 and elem[0] == 'F':
             if j < 70_000:
-                idx_j = (j%7) + 1
+                idx_j = (j%70) + 1
+                if not os.path.exists(f'CV Dataset\Train\Fake\{idx_j}'):
+                    os.makedirs(f'CV Dataset\Train\Fake\{idx_j}')
                 shutil.move(os.path.join(dirPath, elem), os.path.join(f'CV Dataset\Train\Fake\{idx_j}', elem))
             elif j < 80_000: 
-                shutil.move(os.path.join(dirPath, elem), os.path.join(fr'CV Dataset\Validation\Fake\1', elem))
+                idx_j = (j%10) + 1
+                if not os.path.exists(f'CV Dataset\Validation\Fake\{idx_j}'):
+                    os.makedirs(f'CV Dataset\Validation\Fake\{idx_j}')
+                shutil.move(os.path.join(dirPath, elem), os.path.join(fr'CV Dataset\Validation\Fake\{idx_j}', elem))
             else: 
-                idx_j = (j%2) + 1
+                idx_j = (j%20) + 1
+                if not os.path.exists(f'CV Dataset\Test\Fake\{idx_j}'):
+                    os.makedirs(f'CV Dataset\Test\Fake\{idx_j}')
                 shutil.move(os.path.join(dirPath, elem), os.path.join(f'CV Dataset\Test\Fake\{idx_j}', elem))
             j+=1
 
