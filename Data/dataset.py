@@ -2,6 +2,7 @@ import torch
 from torchvision import transforms
 from Data.util import load 
 import numpy as np
+import os 
 
 class BaseTransform:
     def __init__(self, size=(299, 299)):
@@ -70,14 +71,16 @@ class Augmentation:
         if np.random.rand() < self.prob:
             noise = torch.randn_like(image) * 0.02  # Adjust standard deviation to control noise intensity
             image = torch.clamp(image + noise, 0.0, 1.0)  # Clamp values between 0 and 1
+        
+        return image
 
 
 class Dataset(torch.utils.data.Dataset):
-    def __init__(self, dataPath, transform = None, augmentation = None):
-        imgs, labels = load(dataPath)
+    def __init__(self, imgs, labels, transform = None, augmentation = None, mode = 'Train'):
+        
         self.imgs, self.labels = np.array(imgs), np.array(labels)
         self.transform = transform
-        self.augmentation = augmentation if 'Train' in dataPath else None
+        self.augmentation = augmentation if mode == 'Train' else None
 
     def __len__(self):
         return len(self.labels)
@@ -94,6 +97,24 @@ class Dataset(torch.utils.data.Dataset):
 
         return im, label
     
+    def shuffle(self):
+        idx = np.random.choice(np.arange(len(self.labels)), size=len(self.labels), replace=False)
+        self.imgs = self.imgs[idx]
+        self.labels = self.labels[idx]  
+        
+
+
+def create_dataset(data_path):
+        
+        tf = BaseTransform()
+        aug = Augmentation(prob = 0.5)
+        for i in range(len(os.listdir(os.path.join(data_path, 'Real')))):
+            real_im, real_lab = load(os.path.join(data_path, f'Real\{i+1}'))
+            fake_im, fake_lab = load(os.path.join(data_path, f'Fake\{i+1}'))
+            datas = Dataset(real_im + fake_im, real_lab + fake_lab, tf, aug, mode = 'Train' if 'Train' in data_path else 'Eval')
+            datas.shuffle()
+            yield datas
+
 if __name__ == '__main__':
     tf = BaseTransform()
     aug = Augmentation(prob = 0.7)

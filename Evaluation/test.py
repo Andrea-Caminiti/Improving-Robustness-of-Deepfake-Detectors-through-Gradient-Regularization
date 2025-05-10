@@ -1,35 +1,54 @@
 import torch 
 import torch.nn as nn
+import torch.nn.functional as F
 from tqdm import tqdm 
 import numpy as np
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, roc_auc_score 
+from Data.dataset import create_dataset
 
-
-def test(model, dLoader_test, device, log_path):
+def test(model, test_dpath, device, log_path):
     loss_fn = nn.BCEWithLogitsLoss()
-    epoch_loss = []        
+    datas_loss = []        
     preds, gt = [], []
-    with torch.no_grad():
-        for batch in tqdm(dLoader_test, desc=f'Testing...', total=len(dLoader_test)):
+    for dataset in create_dataset(test_dpath):
+        batch_loss = []
+        datas_prec = []
+        datas_rec = []
+        datas_f = []
+        datas_auc = []
+        datas_acc = []
+        dLoader_test = torch.utils.data.DataLoader(dataset, 32, False)
+        with torch.no_grad():
+            for batch in tqdm(dLoader_test, desc=f'Testing...', total=len(dLoader_test)):
 
-            imgs, labels = batch
-            imgs = imgs.to(device)
-            labels = labels.to(device)
+                imgs, labels = batch
+                imgs = imgs.to(device)
+                labels = F.one_hot(labels.long(), 2).float().to(device)
 
-            logits, shallow_feat = model(imgs)
+                logits, shallow_feat = model(imgs)
 
-            loss = loss_fn(logits, labels)
+                loss = loss_fn(logits, labels)
 
-            epoch_loss.append(loss.item())
-            preds.append(logits.argmax(dim=1).cpu())
-            gt.append(labels.cpu())
-        loss = np.mean(epoch_loss).item()
-        acc = accuracy_score(gt, preds)
-        prec, rec, f, _ = precision_recall_fscore_support(gt, preds, average='macro')
-        auc = roc_auc_score(gt, preds)
+                batch_loss.append(loss.item())
+                preds.append(logits.argmax(dim=1).cpu())
+                gt.append(labels.cpu())
+            datas_loss.append(np.mean(batch_loss).item())
+            datas_acc.append(accuracy_score(gt, preds))
+            prec, rec, f, _ = precision_recall_fscore_support(gt, preds, average='macro')
+            datas_prec.append(prec)
+            datas_rec.append(rec)
+            datas_f.append(f)
+            datas_auc.append(roc_auc_score(gt, preds))
+        
+        loss = np.mean(datas_loss).item()
+        acc = np.mean(datas_acc).item()
+        prec = np.mean(datas_prec).item()
+        rec = np.mean(datas_rec).item()
+        f = np.mean(datas_f).item()
+        auc = np.mean(datas_auc).item()
     
 
     with open(log_path, 'w') as log:

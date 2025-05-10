@@ -4,6 +4,7 @@ import cv2
 import shutil
 import matplotlib.pyplot as plt
 import random
+from tqdm import tqdm
 
 def rename(dirPath):
     for f in os.listdir(dirPath):
@@ -28,29 +29,30 @@ def count(dirPath):
     return c
 
 def downsample(dirPath, i, j):
-    for elem in os.listdir(dirPath):
+    for elem in tqdm(os.listdir(dirPath), desc='Sorting the dataset...'):
+        
         if os.path.isfile(os.path.join(dirPath, elem)) and i < 100_000 and elem[0] == 'R':
             if i < 70_000:
-                shutil.move(os.path.join(dirPath, elem), os.path.join('CV Dataset\Real\Train', elem))
+                idx_i = (i%7) + 1
+                shutil.move(os.path.join(dirPath, elem), os.path.join(f'CV Dataset\Train\Real\{idx_i}', elem))
             elif i < 80_000: 
-                shutil.move(os.path.join(dirPath, elem), os.path.join('CV Dataset\Real\Validation', elem))
+                shutil.move(os.path.join(dirPath, elem), os.path.join(fr'CV Dataset\Validation\Real\1', elem))
             else: 
-                shutil.move(os.path.join(dirPath, elem), os.path.join('CV Dataset\Real\Test', elem))
+                idx_i = (i%2) + 1
+                shutil.move(os.path.join(dirPath, elem), os.path.join(f'CV Dataset\Test\Real\{idx_i}', elem))
             i+=1
-
+        
         if os.path.isfile(os.path.join(dirPath, elem)) and j < 100_000 and elem[0] == 'F':
             if j < 70_000:
-                shutil.move(os.path.join(dirPath, elem), os.path.join('CV Dataset\Fake\Train', elem))
+                idx_j = (j%7) + 1
+                shutil.move(os.path.join(dirPath, elem), os.path.join(f'CV Dataset\Train\Fake\{idx_j}', elem))
             elif j < 80_000: 
-                shutil.move(os.path.join(dirPath, elem), os.path.join('CV Dataset\Fake\Validation', elem))
+                shutil.move(os.path.join(dirPath, elem), os.path.join(fr'CV Dataset\Validation\Fake\1', elem))
             else: 
-                shutil.move(os.path.join(dirPath, elem), os.path.join('CV Dataset\Fake\Test', elem))
+                idx_j = (j%2) + 1
+                shutil.move(os.path.join(dirPath, elem), os.path.join(f'CV Dataset\Test\Fake\{idx_j}', elem))
             j+=1
 
-        elif os.path.isdir(os.path.join(dirPath, elem)) and ('Fake' not in dirPath and 'Real' not in dirPath):
-            h, k = downsample(os.path.join(dirPath, elem), i, j)
-            i += h
-            j += k
     return i, j
 
 def get_shapes(dirPath):
@@ -80,7 +82,7 @@ def resize(dirPath):
 
 def load(dirPath):
     imgs, labels = [], []
-    for d in os.listdir(dirPath):
+    for d in tqdm(os.listdir(dirPath), desc=f'Loading {dirPath}...', leave=False):
         if os.path.isdir(os.path.join(dirPath, d)):
             ims, labs = load(os.path.join(dirPath, d))
             imgs += ims
@@ -120,11 +122,11 @@ if __name__ == '__main__':
     # print(c)
     with open('Data/stats.txt', 'a') as f:
         # f.write(f'Before downsampling we have {c["R"]} real images and {c["F"]} fake ones\n')
-        # downsample(dirPath, 0, 0)
+        downsample(dirPath, 0, 0)
         # c = count(dirPath)
         # f.write(f'After downsampling and moving we have {c["R"]} real images and {c["F"]} fake ones\n')
         #f.write(f'Images have shapes: {get_shapes(dirPath)}\n')
         # resize(dirPath)
         # f.write(f'After resizing the images have shapes: {get_shapes(dirPath)}\n')
-        show_samples('CV Dataset\Validation\Real', title="Real Samples")
-        show_samples('CV Dataset\Validation\Fake', title="Fake Samples")
+        #show_samples('CV Dataset\Validation\Real', title="Real Samples")
+        #show_samples('CV Dataset\Validation\Fake', title="Fake Samples")

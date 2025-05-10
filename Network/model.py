@@ -1,4 +1,4 @@
-from MBblock import MBConvBlock
+from Network.MBblock import MBConvBlock
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
