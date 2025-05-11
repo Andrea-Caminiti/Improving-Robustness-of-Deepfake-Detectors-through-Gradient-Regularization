@@ -5,8 +5,8 @@ class Config:
         #Log Paths
         self.logPath_baseline = 'logs/baseline.txt'
         self.logPath_regularized = 'logs/regularized.txt'
-        self.logPath_attack_baseline = 'logs/adversarial_baseline.txt'
-        self.logPath_attack_regularized = 'logs/adversarial_regularized.txt'
+        self.logPath_attack_baseline = 'logs/adversarial_baseline'
+        self.logPath_attack_regularized = 'logs/adversarial_regularized'
         #Device
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         #Data Paths
