@@ -1,4 +1,4 @@
 Before downsampling we have 222598 real images and 104680 fake ones
-After downsampling and moving we have 100000 real images and 100000 fake ones
+After downsampling and moving we have 35000 real images and 35000 fake ones
 Images have shapes: {(299, 299), (178, 218)}
 After resizing the images have shapes: {(299, 299)}
