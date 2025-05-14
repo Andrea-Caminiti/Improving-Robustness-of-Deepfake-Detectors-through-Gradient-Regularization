@@ -110,9 +110,9 @@ def train(train_dpath, valid_dpath, epochs, patience, loss_fn = nn.BCEWithLogits
     losses = pd.DataFrame(losses)
     metrics_t = pd.DataFrame(metrics['Train'])
     metrics_v = pd.DataFrame(metrics['Valid'])
-    losses.to_csv('logs/Losses.csv')
-    metrics_t.to_csv('logs/Training Metrics.csv')
-    metrics_v.to_csv('logs/Validation Metrics.csv')
+    losses.to_csv(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"} Losses.csv')
+    metrics_t.to_csv(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"} Training Metrics.csv')
+    metrics_v.to_csv(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"} Validation Metrics.csv')
 
     return
     
@@ -122,7 +122,7 @@ def valid(model, dLoader_valid, epoch, device):
     preds, gt = [], []
     model = model.eval()
     with torch.no_grad():
-        for batch in tqdm(dLoader_valid, desc=f'Epoch {epoch}: Validation...', total=len(dLoader_valid)):
+        for batch in tqdm(dLoader_valid, desc=f'Epoch {epoch}: Validation...', total=len(dLoader_valid), leave=False):
 
             imgs, labels = batch
             imgs = imgs.to(device)
