@@ -26,6 +26,7 @@ def test(model, test_dpath, device, log_path):
 
                 imgs, labels = batch
                 imgs = imgs.to(device)
+                lab = labels
                 labels = F.one_hot(labels.long(), 2).float().to(device)
 
                 logits, shallow_feat = model(imgs)
@@ -33,8 +34,8 @@ def test(model, test_dpath, device, log_path):
                 loss = loss_fn(logits, labels)
 
                 batch_loss.append(loss.item())
-                preds.append(logits.argmax(dim=1).cpu())
-                gt.append(labels.cpu())
+                preds += logits.argmax(dim=1).cpu().tolist()
+                gt += lab
             datas_loss.append(np.mean(batch_loss).item())
             datas_acc.append(accuracy_score(gt, preds))
             prec, rec, f, _ = precision_recall_fscore_support(gt, preds, average='macro')

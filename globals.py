@@ -11,7 +11,7 @@ class Config:
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         #Data Paths
         self.train_dataPath = 'CV Dataset\Train'
-        self.valid_dataPath = 'CV Dataset\Validtion'
+        self.valid_dataPath = 'CV Dataset\Validation'
         self.test_dataPath = 'CV Dataset\Test'
         #Loss parameters
         self.r = 0.05

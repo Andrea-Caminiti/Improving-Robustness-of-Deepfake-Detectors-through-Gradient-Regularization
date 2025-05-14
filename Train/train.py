@@ -38,6 +38,7 @@ def train(train_dpath, valid_dpath, epochs, patience, loss_fn = nn.BCEWithLogits
                 optimizer.zero_grad()
                 imgs, labels = batch
                 imgs = imgs.to(device)
+                lab = labels
                 labels = F.one_hot(labels.long(), 2).float().to(device)
 
                 logits, shallow_feat = model(imgs)
@@ -50,12 +51,12 @@ def train(train_dpath, valid_dpath, epochs, patience, loss_fn = nn.BCEWithLogits
                 loss.backward()
                 optimizer.step()
                 batch_loss.append(loss.item())
-                preds.append(logits.argmax(dim=1).cpu())
-                gt.append(labels.cpu())
+                preds += logits.argmax(dim=1).cpu().tolist()
+                gt += lab
             del dLoader_train
             gc.collect()
             prec, rec, f, _ = precision_recall_fscore_support(gt, preds, average='macro')
-            datas_loss(np.mean(batch_loss).item())
+            datas_loss.append(np.mean(batch_loss).item())
             datas_prec.append(prec)
             datas_rec.append(rec)
             datas_f.append(f)
@@ -110,6 +111,8 @@ def train(train_dpath, valid_dpath, epochs, patience, loss_fn = nn.BCEWithLogits
     losses = pd.DataFrame(losses)
     metrics_t = pd.DataFrame(metrics['Train'])
     metrics_v = pd.DataFrame(metrics['Valid'])
+    if not os.path.exists('logs'):
+        os.makedirs('logs')
     losses.to_csv('logs/Losses.csv')
     metrics_t.to_csv('logs/Training Metrics.csv')
     metrics_v.to_csv('logs/Validation Metrics.csv')
@@ -126,6 +129,7 @@ def valid(model, dLoader_valid, epoch, device):
 
             imgs, labels = batch
             imgs = imgs.to(device)
+            lab = labels
             labels = F.one_hot(labels.long(), 2).float().to(device)
 
             logits, _ = model(imgs)
@@ -133,8 +137,8 @@ def valid(model, dLoader_valid, epoch, device):
             loss = loss_fn(logits, labels)
 
             epoch_loss.append(loss.item())
-            preds.append(logits.argmax(dim=1).cpu())
-            gt.append(labels.cpu())
+            preds += logits.argmax(dim=1).cpu().tolist()
+            gt += lab
         loss = np.mean(epoch_loss).item()
         acc = accuracy_score(gt, preds)
         prec, rec, f, _ = precision_recall_fscore_support(gt, preds, average='macro')
