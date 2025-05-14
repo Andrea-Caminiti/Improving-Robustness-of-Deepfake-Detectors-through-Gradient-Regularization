@@ -7,6 +7,7 @@ from Train.loss import GradientRegularizedLoss
 from Evaluation.test import test, plots
 from Data.dataset import create_dataset
 from globals import Config
+from Evaluation.attacks import attacks
 
 def main():
     config = Config()
@@ -20,12 +21,15 @@ def main():
     model.load_state_dict(config.best_model_normal)
     #Test Baseline
     test(model, config.test_dataPath, device=config.device, log_path=config.logPath_baseline)
+    #Attack Baseline
+    attacks(model, config.test_dataPath, config.device, config.logPath_attack_baseline)
     del model
     gc.collect()
     model = CBAMEfficientNet(2)
     model.load_state_dict(config.best_model_regularized)
     #Test Regularized model
     test(model, config.test_dataPath, device=config.device, log_path=config.logPath_regularized)
+    attacks(model, config.test_dataPath, config.device, config.logPath_attack_regularized)
 
 
 if __name__ == '__main__':
