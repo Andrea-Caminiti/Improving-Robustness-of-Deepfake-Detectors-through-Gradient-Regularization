@@ -6,12 +6,12 @@ import numpy as np
 import pandas as pd
 import os
 import gc
-from sklearn.metrics import accuracy_score, precision_recall_fscore_support, roc_auc_score 
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support, roc_auc_score, confusion_matrix
 from Network.model import CBAMEfficientNet
 from Train.loss import GradientRegularizedLoss
 from Data.dataset import create_dataset
 
-def train(train_dpath, valid_dpath, epochs, patience, loss_fn = nn.BCEWithLogitsLoss(), device = 'cuda'):
+def train(train_dpath, valid_dpath, epochs, patience, threshold = 1e-3, loss_fn = nn.BCEWithLogitsLoss(), device = 'cuda'):
     model = CBAMEfficientNet().to(device)
     optimizer = torch.optim.Adam(model.parameters(True), lr= 1e-4)
     gradientRegularized = isinstance(loss_fn, GradientRegularizedLoss)
@@ -25,6 +25,7 @@ def train(train_dpath, valid_dpath, epochs, patience, loss_fn = nn.BCEWithLogits
         preds, gt = [], []
         best_valid_loss = 0.0
         i = 0
+        patience_c = 0
         for dataset in create_dataset(train_dpath):
             batch_loss = []
             datas_prec = []
@@ -36,17 +37,18 @@ def train(train_dpath, valid_dpath, epochs, patience, loss_fn = nn.BCEWithLogits
             dLoader_train = torch.utils.data.DataLoader(dataset, 32, True)
             for batch in tqdm(dLoader_train, desc=f'Epoch {epoch}: Dataset {i}...', total=len(dLoader_train), leave=False):
                 optimizer.zero_grad()
-                imgs, labels = batch
-                imgs = imgs.to(device)
-                lab = labels
-                labels = F.one_hot(labels.long(), 2).float().to(device)
+                with torch.autocast(device, dtype=torch.float16):
+                    imgs, labels = batch
+                    imgs = imgs.to(device)
+                    lab = labels
+                    labels = F.one_hot(labels.long(), 2).float().to(device)
 
-                logits, shallow_feat = model(imgs)
+                    logits, shallow_feat = model(imgs)
 
-                if gradientRegularized:
-                    loss = loss_fn(model, logits, shallow_feat, labels)
-                else: 
-                    loss = loss_fn(logits, labels)
+                    if gradientRegularized:
+                        loss = loss_fn(model, shallow_feat, labels)
+                    else: 
+                        loss = loss_fn(logits, labels)
 
                 loss.backward()
                 optimizer.step()
@@ -62,15 +64,16 @@ def train(train_dpath, valid_dpath, epochs, patience, loss_fn = nn.BCEWithLogits
             datas_f.append(f)
             datas_auc.append(roc_auc_score(gt, preds))
             datas_acc.append(accuracy_score(gt, preds))
+            
 
         losses['Train'].append(np.mean(datas_loss).item())
+    
         metrics['Train']['accuracy'].append(np.mean(datas_acc).item())
-        
         metrics['Train']['precision'].append(np.mean(datas_prec).item())
         metrics['Train']['recall'].append(np.mean(datas_rec).item())
         metrics['Train']['f-score'].append(np.mean(datas_f).item())
         metrics['Train']['auc'].append(np.mean(datas_auc).item())
-
+        
         valid_l, valid_acc, valid_prec, valid_rec, valid_f, valid_auc = [], [], [], [], [], []
         for dataset in create_dataset(valid_dpath): 
             i+=1
@@ -85,24 +88,23 @@ def train(train_dpath, valid_dpath, epochs, patience, loss_fn = nn.BCEWithLogits
         del dLoader_valid
         gc.collect()
         losses['Valid'].append(np.mean(valid_l).item())
-        metrics['Train']['accuracy'].append(np.mean(valid_acc).item())
-        
+        metrics['Valid']['accuracy'].append(np.mean(valid_acc).item())
         metrics['Valid']['precision'].append(np.mean(valid_prec).item())
         metrics['Valid']['recall'].append(np.mean(valid_rec).item())
         metrics['Valid']['f-score'].append(np.mean(valid_f).item())
         metrics['Valid']['auc'].append(np.mean(valid_auc).item())
         l = np.mean(valid_l).item()
-        if best_valid_loss == 0.0 or l < best_valid_loss:
+        if best_valid_loss == 0.0 or l < best_valid_loss - threshold:
             #Save the most accurate model 
             best_valid_loss = l
             if not os.path.exists(r'./models'):
                 os.mkdir(r'./models')
             torch.save(model.state_dict(), rf'./models/{"Gradient Regularized" if gradientRegularized else "Baseline"} at epoch {epoch}.pt')
             
-        if l > best_valid_loss and patience_c == patience:
+        if l > best_valid_loss - threshold and patience_c == patience:
                 break
                 
-        elif l > best_valid_loss:
+        elif l > best_valid_loss - threshold:
             patience_c += 1
         
         else: 

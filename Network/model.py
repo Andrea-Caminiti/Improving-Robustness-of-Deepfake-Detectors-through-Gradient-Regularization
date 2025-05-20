@@ -4,8 +4,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class CBAMEfficientNet(nn.Module):
-    def __init__(self, num_classes=2):
+    def __init__(self, num_classes=2, attack = False):
         super(CBAMEfficientNet, self).__init__()
+        self.attack = attack
         # Stem
         self.shallow = nn.Sequential(
             nn.Conv2d(3, 32, kernel_size=3, stride=2, padding=1, bias=False), #299x299 -> 150x150
@@ -50,6 +51,8 @@ class CBAMEfficientNet(nn.Module):
         shallow = self.shallow(x)
         x = self.deep(shallow)
         x = self.classifier(x)
+        if self.attack:
+            return x
         return x, shallow
     
 if __name__ == '__main__':
