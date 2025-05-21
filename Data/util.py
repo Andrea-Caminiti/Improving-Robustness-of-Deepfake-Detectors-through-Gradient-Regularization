@@ -4,6 +4,8 @@ import cv2
 import shutil
 import matplotlib.pyplot as plt
 import random
+import numpy as np
+from scipy.stats import wilcoxon
 from tqdm import tqdm
 
 def rename(dirPath):
@@ -130,13 +132,18 @@ def show_samples(data_path, title="Sample"):
     plt.close()
     
 
+def wilcoxon_test(baseline, regulazied):
+    stat, p_value = wilcoxon(baseline, regulazied)
+    print('P_value: ', p_value)
+    
+
 if __name__ == '__main__':
     dirPath = 'CV Dataset'
     # c = count(dirPath)
     # print(c)
     with open('Data/stats.txt', 'a') as f:
         # f.write(f'Before downsampling we have {c["R"]} real images and {c["F"]} fake ones\n')
-        downsample(dirPath, 0, 0)
+        # downsample(dirPath, 0, 0)
         # c = count(dirPath)
         # f.write(f'After downsampling and moving we have {c["R"]} real images and {c["F"]} fake ones\n')
         #f.write(f'Images have shapes: {get_shapes(dirPath)}\n')
@@ -144,3 +151,19 @@ if __name__ == '__main__':
         # f.write(f'After resizing the images have shapes: {get_shapes(dirPath)}\n')
         #show_samples('CV Dataset\Validation\Real', title="Real Samples")
         #show_samples('CV Dataset\Validation\Fake', title="Fake Samples")
+        pass
+
+    baseline_FGSM = np.array([0.9935,  0.996, 0.997, 0.996,  0.999])
+    regularized_FGSM = np.array([0.987, 0.986, 0.989, 0.989, 0.985])
+    print('FGSM')
+    wilcoxon_test(baseline_FGSM, regularized_FGSM)
+    
+    baseline_PGD = np.array([0.726, 0.729, 0.727, 0.726, 0.723])
+    regularized_PGD = np.array([0.745, 0.743, 0.745, 0.749, 0.745])
+    print('PGD')
+    wilcoxon_test(baseline_PGD, regularized_PGD)
+    
+    baseline_patch = np.array([0.819, 0.819, 0.816, 0.815, 0.814])
+    regularized_patch = np.array([0.832, 0.826, 0.828, 0.832, 0.828])
+    print('PATCH')
+    wilcoxon_test(baseline_patch, regularized_patch)

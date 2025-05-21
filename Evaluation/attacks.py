@@ -40,7 +40,6 @@ def attacks(model, test_dpath, device, log_path):
     attack_dict ={
                 'FGSM': torchattacks.FGSM(model, eps=8/255),
                 'PGD': torchattacks.PGD(model, steps=40),
-                'CW':  torchattacks.CW(model, steps=1000),
                 'PATCH': apply_patch,
                 }
     for name, attack in attack_dict.items():
