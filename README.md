@@ -11,6 +11,10 @@ may be helpful in making DeepFake Detection models more robust to adversarial at
 
 The dataset used is a downsamples version of the DFFD dataset from [[2]](https://arxiv.org/pdf/1910.01717). As shown in the 'stats.txt' file, found in the Data folder, the dataset is made up of 70,000 images, 35,000 real images and 35,000 deepfake images. The real images have been extracted from the CelebA part of the DFFD dataset while the deepfakes have been randomly extracted from the multiple deepfake categories. 
 
+Examples of the samples: 
+![](figs/Real%20Samples.png)
+![](figs/Fake%20Samples.png)
+
 ## The model
 
 The model chosen for the task is an EfficientNet-b0 architecture whose Squeeze-and-Excitation (SE) Blocks have been swapped with Convolutional Block Attention Modules (CBAM).
@@ -28,10 +32,23 @@ The best models are then used for testing and robustness to attacks. In both cas
 - Two Whitebox attacks (FGSM [[3]](https://arxiv.org/abs/1412.6572v3), PGD [[4]](https://arxiv.org/abs/1706.06083))
 - One Blackbox attack (Random Noise Patch [[5]](https://arxiv.org/abs/1712.09665))
 
+Examples of images out of the attack are:
+![](figs/Adversarial%20Images/Baseline%20FGSM.png)
+![](figs/Adversarial%20Images/Regularized%20PGD.png)
+![](figs/Adversarial%20Images/Baseline%20PATCH.png)
+
+
+
 ## Results
 
 Result are summarized in the tables below, the adversarial metrics are the mean of five different seeds (3233, 42, 0, 1234, 2025).
 
+### Baseline losses and metrics over 50 epochs
+![](figs/Baseline%20losses%20and%20metrics.png)
+
+
+### Gradient Regularized model losses and metrics over 50 epochs
+![](figs/Gradient%20Regularized%20losses%20and%20metrics.png)
 
 |Model| Accuracy | Precision | Recall | F1-Score | AUC |
 |-----|-----|-----|-----|-----|-----|
