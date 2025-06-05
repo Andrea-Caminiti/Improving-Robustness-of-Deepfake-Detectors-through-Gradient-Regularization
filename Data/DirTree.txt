@@ -299,3 +299,41 @@ CV Dataset
             │   └── ...
             ├── 4
             └── 5
+
+After numpy save to faster retrieval:
+CV Dataset
+    ├── Test
+    │   ├── 1
+    │   │   ├── images.npy
+    │   │   └── labels.npy
+    │   └── 2
+    │       ├── images.npy
+    │       └── labels.npy
+    ├── Train
+    │   ├── 1
+    │   │   ├── images.npy
+    │   │   └── labels.npy
+    │   ├── 10
+    │   │   ├── images.npy
+    │   │   └── labels.npy
+    │   ├── 11
+    │   │   ├── images.npy
+    │   │   └── labels.npy
+    │   ├── 12
+    │   ├── 13
+    │   ├── 14
+    │   ├── 2
+    │   ├── 3
+    │   ├── 4
+    │   ├── 5
+    │   ├── 6
+    │   ├── 7
+    │   ├── 8
+    │   └── 9
+    └── Validation
+        ├── 1
+        │   ├── images.npy
+        │   └── labels.npy
+        └── 2
+            ├── images.npy
+            └── labels.npy

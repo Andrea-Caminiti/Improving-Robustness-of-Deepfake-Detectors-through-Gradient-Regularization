@@ -7,10 +7,11 @@ import random
 import numpy as np
 from scipy.stats import wilcoxon
 from tqdm import tqdm
+from dataset import Dataset, BaseTransform, Augmentation
 
 def rename(dirPath):
     for f in os.listdir(dirPath):
-        os.rename(os.path.join(dirPath, f), os.path.join(dirPath, f'R_celeba_{f}'))
+        os.rename(os.path.join(dirPath, f), os.path.join(dirPath, f'R_ffhq_{f}'))
 
 def convert(dirPath):
     for f in os.listdir(dirPath):
@@ -35,17 +36,17 @@ def downsample(dirPath, i, j):
         
         if os.path.isfile(os.path.join(dirPath, elem)) and i < 100_000 and elem[0] == 'R':
             if i < 70_000:
-                idx_i = (i%70) + 1
+                idx_i = (i%14) + 1
                 if not os.path.exists(f'CV Dataset\Train\Real\{idx_i}'):
                     os.makedirs(f'CV Dataset\Train\Real\{idx_i}')
                 shutil.move(os.path.join(dirPath, elem), os.path.join(f'CV Dataset\Train\Real\{idx_i}', elem))
             elif i < 80_000: 
-                idx_i = (i%10) + 1
+                idx_i = (i%2) + 1
                 if not os.path.exists(f'CV Dataset\Validation\Real\{idx_i}'):
                     os.makedirs(f'CV Dataset\Validation\Real\{idx_i}')
                 shutil.move(os.path.join(dirPath, elem), os.path.join(fr'CV Dataset\Validation\Real\{idx_i}', elem))
             else: 
-                idx_i = (i%20) + 1
+                idx_i = (i%4) + 1
                 if not os.path.exists(f'CV Dataset\Test\Real\{idx_i}'):
                     os.makedirs(f'CV Dataset\Test\Real\{idx_i}')
                 shutil.move(os.path.join(dirPath, elem), os.path.join(f'CV Dataset\Test\Real\{idx_i}', elem))
@@ -53,17 +54,17 @@ def downsample(dirPath, i, j):
         
         if os.path.isfile(os.path.join(dirPath, elem)) and j < 100_000 and elem[0] == 'F':
             if j < 70_000:
-                idx_j = (j%70) + 1
+                idx_j = (j%14) + 1
                 if not os.path.exists(f'CV Dataset\Train\Fake\{idx_j}'):
                     os.makedirs(f'CV Dataset\Train\Fake\{idx_j}')
                 shutil.move(os.path.join(dirPath, elem), os.path.join(f'CV Dataset\Train\Fake\{idx_j}', elem))
             elif j < 80_000: 
-                idx_j = (j%10) + 1
+                idx_j = (j%2) + 1
                 if not os.path.exists(f'CV Dataset\Validation\Fake\{idx_j}'):
                     os.makedirs(f'CV Dataset\Validation\Fake\{idx_j}')
                 shutil.move(os.path.join(dirPath, elem), os.path.join(fr'CV Dataset\Validation\Fake\{idx_j}', elem))
             else: 
-                idx_j = (j%20) + 1
+                idx_j = (j%4) + 1
                 if not os.path.exists(f'CV Dataset\Test\Fake\{idx_j}'):
                     os.makedirs(f'CV Dataset\Test\Fake\{idx_j}')
                 shutil.move(os.path.join(dirPath, elem), os.path.join(f'CV Dataset\Test\Fake\{idx_j}', elem))
@@ -131,16 +132,31 @@ def show_samples(data_path, title="Sample"):
     plt.pause(3)
     plt.close()
     
-
 def wilcoxon_test(baseline, regulazied):
     stat, p_value = wilcoxon(baseline, regulazied)
     print('P_value: ', p_value)
-    
+
+def save_to_npy(data_path):
+    tf = BaseTransform()
+    aug = Augmentation(prob = 0.5)
+    for i in range(len(os.listdir(os.path.join(data_path, 'Real')))):
+            real_im, real_lab = load(os.path.join(data_path, f'Real\{i+1}'))
+            fake_im, fake_lab = load(os.path.join(data_path, f'Fake\{i+1}'))
+            datas = Dataset(real_im + fake_im, real_lab + fake_lab, tf, aug, mode = 'Train' if 'Train' in data_path else 'Eval')
+            datas.shuffle()
+            if not os.path.exists(os.path.join(data_path, f'{i+1}')):
+                os.makedirs(os.path.join(data_path, f'{i+1}'))
+            np.save(os.path.join(data_path, f'{i+1}/images.npy'), datas.imgs)
+            np.save(os.path.join(data_path, f'{i+1}/labels.npy'), datas.labels)
 
 if __name__ == '__main__':
-    dirPath = 'CV Dataset'
-    # c = count(dirPath)
-    # print(c)
+    dirPath = r'CV Dataset'
+    train_dataPath = 'CV Dataset\Train'
+    valid_dataPath = 'CV Dataset\Validation'
+    test_dataPath = 'CV Dataset\Test'
+    save_to_npy(train_dataPath)
+    save_to_npy(valid_dataPath)
+    save_to_npy(test_dataPath)
     with open('Data/stats.txt', 'a') as f:
         # f.write(f'Before downsampling we have {c["R"]} real images and {c["F"]} fake ones\n')
         # downsample(dirPath, 0, 0)
@@ -153,17 +169,17 @@ if __name__ == '__main__':
         #show_samples('CV Dataset\Validation\Fake', title="Fake Samples")
         pass
 
-    baseline_FGSM = np.array([0.9935,  0.996, 0.997, 0.996,  0.999])
-    regularized_FGSM = np.array([0.987, 0.986, 0.989, 0.989, 0.985])
-    print('FGSM')
-    wilcoxon_test(baseline_FGSM, regularized_FGSM)
+    # baseline_FGSM = np.array([0.9935,  0.996, 0.997, 0.996,  0.999])
+    # regularized_FGSM = np.array([0.987, 0.986, 0.989, 0.989, 0.985])
+    # print('FGSM')
+    # wilcoxon_test(baseline_FGSM, regularized_FGSM)
     
-    baseline_PGD = np.array([0.726, 0.729, 0.727, 0.726, 0.723])
-    regularized_PGD = np.array([0.745, 0.743, 0.745, 0.749, 0.745])
-    print('PGD')
-    wilcoxon_test(baseline_PGD, regularized_PGD)
+    # baseline_PGD = np.array([0.726, 0.729, 0.727, 0.726, 0.723])
+    # regularized_PGD = np.array([0.745, 0.743, 0.745, 0.749, 0.745])
+    # print('PGD')
+    # wilcoxon_test(baseline_PGD, regularized_PGD)
     
-    baseline_patch = np.array([0.819, 0.819, 0.816, 0.815, 0.814])
-    regularized_patch = np.array([0.832, 0.826, 0.828, 0.832, 0.828])
-    print('PATCH')
-    wilcoxon_test(baseline_patch, regularized_patch)
+    # baseline_patch = np.array([0.819, 0.819, 0.816, 0.815, 0.814])
+    # regularized_patch = np.array([0.832, 0.826, 0.828, 0.832, 0.828])
+    # print('PATCH')
+    # wilcoxon_test(baseline_patch, regularized_patch)

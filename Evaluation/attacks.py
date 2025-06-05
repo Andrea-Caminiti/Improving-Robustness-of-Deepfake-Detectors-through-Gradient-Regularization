@@ -30,39 +30,40 @@ def apply_patch(images, labels, patch_size=32, value=1.0):
 def attacks(model, test_dpath, device, log_path):
     model = model.to(device)
     loss_fn = nn.BCEWithLogitsLoss()
-    datas_loss = []      
-    datas_prec = []
-    datas_rec = []
-    datas_f = []
-    datas_auc = []
-    datas_acc = []  
-    global_preds, global_gt = [], []
+    
     attack_dict ={
                 'FGSM': torchattacks.FGSM(model, eps=8/255),
-                'PGD': torchattacks.PGD(model, steps=40),
+                'PGD': torchattacks.PGD(model, steps=10),
                 'PATCH': apply_patch,
                 }
     for name, attack in attack_dict.items():
+        datas_loss = []      
+        datas_prec = []
+        datas_rec = []
+        datas_f = []
+        datas_auc = []
+        datas_acc = []  
+        global_preds, global_gt = [], []
         for dataset in tqdm(create_dataset(test_dpath), desc=f'Attack: {name}...'):
             batch_loss = []
             preds, gt = [], []
             dLoader_test = DataLoader(dataset, 8, False)
             for batch in tqdm(dLoader_test, desc=f'Testing...', total=len(dLoader_test), leave=False):
-                
-                imgs, labels = batch
-                lab = labels.long()
-                labels = F.one_hot(labels.long(), 2).float().to(device)
-                adv_imgs = attack(imgs, lab).to(device)
-                logits = model(adv_imgs)
+                with torch.autocast(device, dtype=torch.float16):
+                    imgs, labels = batch
+                    lab = labels.long()
+                    labels = F.one_hot(labels.long(), 2).float().to(device)
+                    adv_imgs = attack(imgs, lab).to(device)
+                    logits = model(adv_imgs)
 
-                loss = loss_fn(logits, labels)
+                    loss = loss_fn(logits, labels)
 
-                batch_loss.append(loss.item())
-                preds += logits.argmax(dim=1).cpu().tolist()
-                gt += lab
-                
-                del logits, lab, labels, adv_imgs, imgs
-                gc.collect()
+                    batch_loss.append(loss.item())
+                    preds += logits.argmax(dim=1).cpu().tolist()
+                    gt += lab
+                    
+                    del logits, lab, labels, adv_imgs, imgs
+                    gc.collect()
             datas_loss.append(np.mean(batch_loss).item())
             datas_acc.append(accuracy_score(gt, preds))
             prec, rec, f, _ = precision_recall_fscore_support(gt, preds, average='macro')
@@ -72,8 +73,7 @@ def attacks(model, test_dpath, device, log_path):
             datas_auc.append(roc_auc_score(gt, preds))
             global_gt += gt
             global_preds += preds
-            
-            break
+           
             
         loss = np.mean(datas_loss).item()
         acc = np.mean(datas_acc).item()

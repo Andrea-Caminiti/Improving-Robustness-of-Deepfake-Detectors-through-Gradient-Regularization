@@ -1,13 +1,13 @@
 import torch
 from torchvision import transforms
-from Data.util import load 
+# from Data.util import load 
 import numpy as np
 import os 
 
 class BaseTransform:
-    def __init__(self, size=(299, 299)):
-        self.size = size
-
+    def __init__(self):
+        pass
+    
     def __call__(self, sample):
         # Convert to tensor
         if not isinstance(sample, torch.Tensor):
@@ -78,7 +78,10 @@ class Augmentation:
 class Dataset(torch.utils.data.Dataset):
     def __init__(self, imgs, labels, transform = None, augmentation = None, mode = 'Train'):
         
-        self.imgs, self.labels = np.array(imgs), np.array(labels)
+        if not isinstance(imgs, np.ndarray):
+            self.imgs, self.labels = np.array(imgs), np.array(labels)
+        else: 
+            self.imgs, self.labels = imgs, labels
         self.transform = transform
         self.augmentation = augmentation if mode == 'Train' else None
 
@@ -108,11 +111,10 @@ def create_dataset(data_path):
         
         tf = BaseTransform()
         aug = Augmentation(prob = 0.5)
-        for i in range(len(os.listdir(os.path.join(data_path, 'Real')))):
-            real_im, real_lab = load(os.path.join(data_path, f'Real\{i+1}'))
-            fake_im, fake_lab = load(os.path.join(data_path, f'Fake\{i+1}'))
-            datas = Dataset(real_im + fake_im, real_lab + fake_lab, tf, aug, mode = 'Train' if 'Train' in data_path else 'Eval')
-            datas.shuffle()
+        for i in range(len(os.listdir(data_path))):
+            imgs = np.load(os.path.join(data_path, f'{i+1}/images.npy'))
+            labels = np.load(os.path.join(data_path, f'{i+1}/labels.npy'))
+            datas = Dataset(imgs, labels, tf, aug, mode = 'Train' if 'Train' in data_path else 'Eval')
             yield datas
 
 if __name__ == '__main__':

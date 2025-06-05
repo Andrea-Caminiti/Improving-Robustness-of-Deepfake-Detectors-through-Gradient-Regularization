@@ -45,6 +45,7 @@ def test(model, test_dpath, device, log_path):
             datas_prec.append(prec)
             datas_rec.append(rec)
             datas_f.append(f)
+            print(np.unique(gt))
             datas_auc.append(roc_auc_score(gt, preds))
             gloabal_gt += gt
             global_preds += preds
@@ -106,33 +107,33 @@ def plots(csv_dir):
     axes = [[ax0], [ax10, ax11], [ax20, ax21], [ax3]]
 
     axes[0][0].set_title('Losses per epoch')
-    axes[0][0].plot(loss['Train'], label='Training Loss')
-    axes[0][0].plot(loss['Valid'], label='Validation Loss')
+    axes[0][0].plot(np.arange(0, len(loss['Train']), 1), loss['Train'], label='Training Loss')
+    axes[0][0].plot(np.arange(0, len(loss['Train']), 1), loss['Valid'], label='Validation Loss')
     axes[0][0].legend(loc='upper right')
 
     axes[1][0].set_title('Accuracies per epoch')
-    axes[1][0].plot(metrics_t['accuracy'], label='Training Accuracy')
-    axes[1][0].plot(metrics_v['accuracy'], label='Validation Accuracy')
+    axes[1][0].plot(np.arange(0, len(loss['Train']), 1), metrics_t['accuracy'], label='Training Accuracy')
+    axes[1][0].plot(np.arange(0, len(loss['Train']), 1), metrics_v['accuracy'], label='Validation Accuracy')
     axes[1][0].legend(loc='lower right')
 
     axes[1][1].set_title('Precisions per epoch')
-    axes[1][1].plot(metrics_t['precision'], label='Training Precision')
-    axes[1][1].plot(metrics_v['precision'], label='Validation Precision')
+    axes[1][1].plot(np.arange(0, len(loss['Train']), 1), metrics_t['precision'], label='Training Precision')
+    axes[1][1].plot(np.arange(0, len(loss['Train']), 1), metrics_v['precision'], label='Validation Precision')
     axes[1][1].legend(loc='lower right')
 
     axes[2][0].set_title('Recalls per epoch')
-    axes[2][0].plot(metrics_t['recall'], label='Training Recall')
-    axes[2][0].plot(metrics_v['recall'], label='Validation Recall')
+    axes[2][0].plot(np.arange(0, len(loss['Train']), 1), metrics_t['recall'], label='Training Recall')
+    axes[2][0].plot(np.arange(0, len(loss['Train']), 1), metrics_v['recall'], label='Validation Recall')
     axes[2][0].legend(loc='lower right')
 
     axes[2][1].set_title('F1-scores per epoch')
-    axes[2][1].plot(metrics_t['f-score'], label='Training F1-Score')
-    axes[2][1].plot(metrics_v['f-score'], label='Validation F1-Score')
+    axes[2][1].plot(np.arange(0, len(loss['Train']), 1), metrics_t['f-score'], label='Training F1-Score')
+    axes[2][1].plot(np.arange(0, len(loss['Train']), 1), metrics_v['f-score'], label='Validation F1-Score')
     axes[2][1].legend(loc='lower right')
 
     axes[3][0].set_title('Area Under the Curve per epoch')
-    axes[3][0].plot(metrics_t['auc'], label='Training Area Under the Curve')
-    axes[3][0].plot(metrics_v['auc'], label='Validation Area Under the Curve')
+    axes[3][0].plot(np.arange(0, len(loss['Train']), 1), metrics_t['auc'], label='Training Area Under the Curve')
+    axes[3][0].plot(np.arange(0, len(loss['Train']), 1), metrics_v['auc'], label='Validation Area Under the Curve')
     axes[3][0].legend(loc='lower right')
     
     if not os.path.exists('./figs'):

@@ -2,7 +2,7 @@
 
 Project for the Computer Vision class at Sapienza University of Rome a.y. 2024-2025
 
-Dataset to be downloaded from: [here](https://drive.google.com/file/d/1fL5EsLsn_AZC3l3w_qRKqv-RGtn00ryd/view?usp=sharing)
+Dataset to be downloaded from: [here](https://drive.google.com/file/d/11j4Ion6h0CFb7Vx5AOLiVEU-JUQCYVXj/view?usp=sharing)
 ## Introduction
 Aim of the project is to test the hypothesis that the gradient regularization loss presented in [[1]](https://ieeexplore.ieee.org/document/10516609)
 may be helpful in making DeepFake Detection models more robust to adversarial attacks. 
@@ -75,6 +75,8 @@ It's easy to see that out of three attacks only in two gradient regularization h
 |Patch|0.0625 |
 
 Thus we reject the alternative hypothesis and there is no statistical significance in the difference in metrics for neither of the three attacks.
+
+Other experiments have been carried out with less epochs (20) to see if a less trained model would be more impacted by the attacks and if in that case the regularization helped to make the model more robust, but still no improvements has been reached. All output files are found in folder `Results 2`
 ## References
 
 [1] W. Guan, W. Wang, J. Dong and B. Peng, "Improving Generalization of Deepfake Detectors by Imposing Gradient Regularization," in IEEE Transactions on Information Forensics and Security

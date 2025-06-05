@@ -17,5 +17,5 @@ class Config:
         self.r = 0.05
         self.alpha = 0.75
         #Model Paths
-        self.best_model_normal = 'models\Baseline at epoch 49.pt'
-        self.best_model_regularized = 'models\Gradient Regularized at epoch 49.pt'
+        self.best_model_normal = 'models\Baseline at epoch 19.pt'
+        self.best_model_regularized = 'models\Gradient Regularized at epoch 19.pt'

@@ -55,7 +55,7 @@ def train(train_dpath, valid_dpath, epochs, patience, threshold = 1e-3, loss_fn 
                 batch_loss.append(loss.item())
                 preds += logits.argmax(dim=1).cpu().tolist()
                 gt += lab
-            del dLoader_train
+            del dLoader_train, dataset
             gc.collect()
             prec, rec, f, _ = precision_recall_fscore_support(gt, preds, average='macro')
             datas_loss.append(np.mean(batch_loss).item())
@@ -113,11 +113,11 @@ def train(train_dpath, valid_dpath, epochs, patience, threshold = 1e-3, loss_fn 
     losses = pd.DataFrame(losses)
     metrics_t = pd.DataFrame(metrics['Train'])
     metrics_v = pd.DataFrame(metrics['Valid'])
-    if not os.path.exists('logs'):
-        os.makedirs('logs')
-    losses.to_csv(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"} Losses.csv')
-    metrics_t.to_csv(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"} Training Metrics.csv')
-    metrics_v.to_csv(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"} Validation Metrics.csv')
+    if not os.path.exists('logs/{"Gradient Regularized" if gradientRegularized else "Baseline"}'):
+        os.makedirs(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"}')
+    losses.to_csv(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"}/{"Gradient Regularized" if gradientRegularized else "Baseline"} Losses.csv')
+    metrics_t.to_csv(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"}/{"Gradient Regularized" if gradientRegularized else "Baseline"}  Training Metrics.csv')
+    metrics_v.to_csv(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"}/{"Gradient Regularized" if gradientRegularized else "Baseline"}  Validation Metrics.csv')
 
     return
     
