@@ -1,9 +1,9 @@
 ###########################################################################
                              Evaluation results                            
 ###########################################################################
-Test Loss: 0.0005154122622397895
-Test accuracy: 0.99975
-Test precision: 0.9997502497502497
-Test recall: 0.99975
-Test F1-score: 0.9997499999375
-Test Area Under the Curve: 0.9997499999999999
+Test Loss: 0.019056456616280436
+Test accuracy: 0.99776
+Test precision: 0.9944620253164558
+Test recall: 0.9985999999999999
+Test F1-score: 0.996514611307063
+Test Area Under the Curve: 0.9985999999999999

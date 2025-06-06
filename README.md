@@ -9,7 +9,7 @@ may be helpful in making DeepFake Detection models more robust to adversarial at
 
 ### The Dataset 
 
-The dataset used is a downsamples version of the DFFD dataset from [[2]](https://arxiv.org/pdf/1910.01717). As shown in the 'stats.txt' file, found in the Data folder, the dataset is made up of 70,000 images, 35,000 real images and 35,000 deepfake images. The real images have been extracted from the CelebA part of the DFFD dataset while the deepfakes have been randomly extracted from the multiple deepfake categories. 
+The dataset used is a downsamples version of the DFFD dataset from [[2]](https://arxiv.org/pdf/1910.01717). As shown in the `stats.txt` file, found in the `Data` folder, the dataset is made up of 185,000 images, 100,000 real images and 85.000 deepfake images. The real images have been extracted from the `CelebA` and `ffhq` part of the DFFD dataset while the deepfakes have been randomly extracted from the multiple deepfake categories. 
 
 Examples of the samples: 
 ![](figs/Real%20Samples.png)
@@ -22,11 +22,11 @@ The model chosen for the task is an EfficientNet-b0 architecture whose Squeeze-a
 Two models have been trained, one with the gradient regularization loss of [1], one with The Binary Cross Entropy loss.
 
 ## The experiments
-Both model have been trained for 50 epochs, with an Adam optimizer and a learning rate of 1e-4.
+Both model have been trained for 20 epochs, with an Adam optimizer and a learning rate of 1e-4.
 
 Also a simple pipeline has been used to load the dataset in chuncks to comply with the hardware constraints. 
 
-Early stopping is used to stop if the validation loss is not decreasing fast enough (threshold of 1e-3 decrease). 
+Early stopping is used to stop if the validation loss is not decreasing fast enough (threshold of 1e-1 decrease). 
 
 The best models are then used for testing and robustness to attacks. In both cases, the model after the last epoch is used. Three type of attacks have been chosen:     
 - Two Whitebox attacks (FGSM [[3]](https://arxiv.org/abs/1412.6572v3), PGD [[4]](https://arxiv.org/abs/1706.06083))
@@ -43,11 +43,11 @@ Examples of images out of the attack are:
 
 Result are summarized in the tables below, the adversarial metrics are the mean of five different seeds (3233, 42, 0, 1234, 2025).
 
-### Baseline losses and metrics over 50 epochs
+### Baseline losses and metrics over 20 epochs
 ![](figs/Baseline%20losses%20and%20metrics.png)
 
 
-### Gradient Regularized model losses and metrics over 50 epochs
+### Gradient Regularized model losses and metrics over 20 epochs
 ![](figs/Gradient%20Regularized%20losses%20and%20metrics.png)
 
 |Model| Accuracy | Precision | Recall | F1-Score | AUC |
@@ -76,7 +76,7 @@ It's easy to see that out of three attacks only in two gradient regularization h
 
 Thus we reject the alternative hypothesis and there is no statistical significance in the difference in metrics for neither of the three attacks.
 
-Other experiments have been carried out with less epochs (20) to see if a less trained model would be more impacted by the attacks and if in that case the regularization helped to make the model more robust, but still no improvements has been reached. All output files are found in folder `Results 2`
+Other experiments have been carried out with more epochs (50) to see if a more trained model would be more impacted by the attacks and if in that case the regularization helped to make the model more robust, but still no improvements has been reached. All output files are found in folder `Results 2`
 ## References
 
 [1] W. Guan, W. Wang, J. Dong and B. Peng, "Improving Generalization of Deepfake Detectors by Imposing Gradient Regularization," in IEEE Transactions on Information Forensics and Security
