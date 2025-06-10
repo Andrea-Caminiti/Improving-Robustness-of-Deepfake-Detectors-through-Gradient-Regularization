@@ -52,21 +52,21 @@ Result are summarized in the tables below, the adversarial metrics are the mean 
 
 |Model| Accuracy | Precision | Recall | F1-Score | AUC |
 |-----|-----|-----|-----|-----|-----|
-Simple | 99.96% | 99.96% | 99.96% | 99.96% | 99.96% | 99
-Gradient Regularized | 99.98% | 99.98% | 99.98% | 99.98% | 99.98% |
+Simple | 99.84% | 99.60% | 99.9% | 99.75% | 99.9% |
+Gradient Regularized | 99.77% | 99.44% | 99.85% | 99.65% | 99.85% |
 
 |Model |Attack | Accuracy | Precision | Recall | F1-Score  | AUC  |
 |-----|-----|-----|-----|-----|-----|-----|
-Simple | FGSM | 99.69% | 99.69% | 99.69% | 99.69% | 99.69% |
-Gradient Regularized | FGSM | 98.75% | 98.75% | 98.75% | 98.75% | 98.75% |
+Simple | FGSM | 93.51% | 87.75% | 95.90% | 90.90% | 95.90% |
+Gradient Regularized | FGSM | 92.83% | 86.85% | 95.12% | 89.99% | 95.12% |
 |-----|-----|-----|-----|-----|-----|-----|
-Simple | PGD | 72.66% | 72.66% | 72.66% | 72.66% | 72.66% |
-Gradient Regularized | PGD | 74.54% | 74.54% |74.54% |74.54% |74.54% |
+Simple | PGD | 93.13% | 87.22% | 95.68% | 90.42% | 95.68% |
+Gradient Regularized | PGD | 93.24% | 87.38% |95.78% |90.57% |95.78% |
 |-----|-----|-----|-----|-----|-----|-----|
-Simple | Patch | 81.68% | 81.68% | 81.68% | 81.68% | 81.68% |
-Gradient Regularized | Patch | 82.96% | 82.96% | 82.96% | 82.96% | 82.96% |
+Simple | Patch | 93.54% | 87.80% | 95.96% | 90.95% | 95.96% |
+Gradient Regularized | Patch | 93.52% | 87.77% | 95.95% | 90.92% | 95.95% |
 
-It's easy to see that out of three attacks only in two gradient regularization helped in making the model more robust, even though not by a lot. The Wilcoxon signed-rank test applied to the results of all five different seed per attack had the p values summarized in the last table:
+It's easy to see that out of three attacks only in one gradient regularization helped in making the model more robust, even if barely. The Wilcoxon signed-rank test applied to the results of all five different seed per attack had the p values summarized in the last table:
 
 |Attack| P-value |
 |-----|-----|
