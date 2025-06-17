@@ -113,11 +113,11 @@ def train(train_dpath, valid_dpath, epochs, patience, threshold = 1e-3, loss_fn 
     losses = pd.DataFrame(losses)
     metrics_t = pd.DataFrame(metrics['Train'])
     metrics_v = pd.DataFrame(metrics['Valid'])
-    if not os.path.exists('logs/{"Gradient Regularized" if gradientRegularized else "Baseline"}'):
+    if not os.path.exists(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"}'):
         os.makedirs(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"}')
     losses.to_csv(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"}/{"Gradient Regularized" if gradientRegularized else "Baseline"} Losses.csv')
-    metrics_t.to_csv(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"}/{"Gradient Regularized" if gradientRegularized else "Baseline"}  Training Metrics.csv')
-    metrics_v.to_csv(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"}/{"Gradient Regularized" if gradientRegularized else "Baseline"}  Validation Metrics.csv')
+    metrics_t.to_csv(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"}/{"Gradient Regularized" if gradientRegularized else "Baseline"} Training Metrics.csv')
+    metrics_v.to_csv(f'logs/{"Gradient Regularized" if gradientRegularized else "Baseline"}/{"Gradient Regularized" if gradientRegularized else "Baseline"} Validation Metrics.csv')
 
     return
     
@@ -128,15 +128,15 @@ def valid(model, dLoader_valid, epoch, device):
     model = model.eval()
     with torch.no_grad():
         for batch in tqdm(dLoader_valid, desc=f'Epoch {epoch}: Validation...', total=len(dLoader_valid), leave=False):
+            with torch.autocast(device, dtype=torch.float16):
+                imgs, labels = batch
+                imgs = imgs.to(device)
+                lab = labels
+                labels = F.one_hot(labels.long(), 2).float().to(device)
 
-            imgs, labels = batch
-            imgs = imgs.to(device)
-            lab = labels
-            labels = F.one_hot(labels.long(), 2).float().to(device)
+                logits, _ = model(imgs)
 
-            logits, _ = model(imgs)
-
-            loss = loss_fn(logits, labels)
+                loss = loss_fn(logits, labels)
 
             epoch_loss.append(loss.item())
             preds += logits.argmax(dim=1).cpu().tolist()
